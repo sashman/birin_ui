@@ -13,7 +13,8 @@ const dashboardRoutes = [
     sidebarName: "Callback",
     navbarName: "Birin Dashboard",
     icon: Dashboard,
-    component: Callback
+    component: Callback,
+    hidden: true
   },
   {
     path: "/dashboard",
