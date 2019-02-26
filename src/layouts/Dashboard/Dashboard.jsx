@@ -19,12 +19,14 @@ import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboar
 import image from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/reactlogo.png";
 
-const switchRoutes = (
+const switchRoutes = (auth) => (
   <Switch>
     {dashboardRoutes.map((prop, key) => {
       if (prop.redirect)
         return <Redirect from={prop.path} to={prop.to} key={key} />;
-      return <Route path={prop.path} component={prop.component} key={key} />;
+
+      const Component = prop.component;
+      return <Route path={prop.path} render={props => <Component auth={auth} {...props} />} key={key} />;
     })}
   </Switch>
 );
@@ -52,7 +54,7 @@ class App extends React.Component {
     if (navigator.platform.indexOf("Win") > -1) {
       const ps = new PerfectScrollbar(this.refs.mainPanel);
     }
-    window.addEventListener("resize", this.resizeFunction);
+    // window.addEventListener("resize", this.resizeFunction);
   }
   componentDidUpdate(e) {
     if (e.history.location.pathname !== e.location.pathname) {
@@ -66,7 +68,14 @@ class App extends React.Component {
     window.removeEventListener("resize", this.resizeFunction);
   }
   render() {
-    const { classes, ...rest } = this.props;
+    const { classes, auth, ...rest } = this.props;
+
+    console.log('Dashboard', auth);
+
+    if(!auth.isAuthenticated()){
+      auth.login();
+    }
+
     return (
       <div className={classes.wrapper}>
         <Sidebar
@@ -88,10 +97,10 @@ class App extends React.Component {
           {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
           {this.getRoute() ? (
             <div className={classes.content}>
-              <div className={classes.container}>{switchRoutes}</div>
+              <div className={classes.container}>{switchRoutes(auth)}</div>
             </div>
           ) : (
-            <div className={classes.map}>{switchRoutes}</div>
+            <div className={classes.map}>{switchRoutes(auth)}</div>
           )}
           {this.getRoute() ? <Footer /> : null}
         </div>
