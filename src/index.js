@@ -5,7 +5,6 @@ import { Router, Route, Switch } from "react-router-dom";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import "assets/css/material-dashboard-react.css";
-import Auth from "./Auth/Auth";
 
 import indexRoutes from "routes/index.jsx";
 
@@ -14,8 +13,6 @@ const hist = createBrowserHistory();
 const client = new ApolloClient({
   uri: process.env.REACT_APP_SECRET_CODE || "http://localhost:4000"
 });
-
-const auth = new Auth();
 
 ReactDOM.render(
   <ApolloProvider client={client}>
@@ -26,7 +23,7 @@ ReactDOM.render(
           return (
             <Route
               path={prop.path}
-              render={props => <Component auth={auth} {...props} />}
+              render={props => <Component {...props} />}
               key={key}
             />
           );

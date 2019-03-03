@@ -17,6 +17,7 @@ import Search from "@material-ui/icons/Search";
 // core components
 import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
+import LogoutButton from "./LogoutButton.jsx";
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.jsx";
 
@@ -162,6 +163,7 @@ class HeaderLinks extends React.Component {
             <p className={classes.linkText}>Profile</p>
           </Hidden>
         </Button>
+        <LogoutButton />
       </div>
     );
   }

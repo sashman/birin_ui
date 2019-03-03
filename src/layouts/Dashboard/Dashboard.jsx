@@ -14,19 +14,21 @@ import Sidebar from "components/Sidebar/Sidebar.jsx";
 
 import dashboardRoutes from "routes/dashboard.jsx";
 
+import Auth from "../../Auth/Auth";
+
 import dashboardStyle from "assets/jss/material-dashboard-react/layouts/dashboardStyle.jsx";
 
 import image from "assets/img/sidebar-2.jpg";
 import logo from "assets/img/reactlogo.png";
 
+const auth = new Auth();
 const switchRoutes = (auth) => (
   <Switch>
     {dashboardRoutes.map((prop, key) => {
       if (prop.redirect)
         return <Redirect from={prop.path} to={prop.to} key={key} />;
 
-      const Component = prop.component;
-      return <Route path={prop.path} render={props => <Component auth={auth} {...props} />} key={key} />;
+      return <Route path={prop.path} component={prop.component} key={key} />;
     })}
   </Switch>
 );
@@ -38,6 +40,13 @@ class App extends React.Component {
       mobileOpen: false
     };
     this.resizeFunction = this.resizeFunction.bind(this);
+  }
+  static childContextTypes = {
+    auth: PropTypes.object
+  };
+
+  getChildContext() {
+    return { auth };
   }
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
@@ -69,13 +78,7 @@ class App extends React.Component {
   }
   render() {
     const { classes, auth, ...rest } = this.props;
-
-    console.log('Dashboard', auth);
-
-    if(!auth.isAuthenticated()){
-      auth.login();
-    }
-
+    
     return (
       <div className={classes.wrapper}>
         <Sidebar

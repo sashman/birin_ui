@@ -12,23 +12,31 @@ const styles = theme => ({
 class Callback extends Component {
   state = { loginSuccess: false, loginAttepmted: false };
 
+  static contextTypes = {
+    auth: PropTypes.object
+  };
+
   handleAuthentication = (auth, location) => {
     if (/access_token|id_token|error/.test(location.hash)) {
       auth.handleAuthentication(() => {
-        console.log("Logged in!", auth.isAuthenticated());
-        console.log("Auth token", auth.getAccessToken());
         this.setState({ loginSuccess: true, loginAttepmted: true });
       });
     }
   };
 
   render() {
-    const { classes, auth, location } = this.props;
-    console.log("Callback", auth);
-    console.log(this.state);
+    const { classes, location } = this.props;
+    const { auth } = this.context;
 
     if (!this.state.loginSuccess) {
-      this.handleAuthentication(auth, location);
+      if (/access_token|id_token|error/.test(location.hash)) {
+        auth
+          .handleAuthentication()
+          .then(() => {
+            this.setState({ loginSuccess: true, loginAttepmted: true });
+          })
+          .catch(err => console.error(err));
+      }
     }
 
     return this.state.loginSuccess ? (

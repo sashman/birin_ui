@@ -1,4 +1,3 @@
-import history from "../routes/history";
 import auth0 from "auth0-js";
 import { AUTH_CONFIG } from "./auth0Config";
 
@@ -15,50 +14,45 @@ export default class Auth {
     scope: "openid"
   });
 
-  constructor() {
-    this.login = this.login.bind(this);
-    this.logout = this.logout.bind(this);
-    this.handleAuthentication = this.handleAuthentication.bind(this);
-    this.isAuthenticated = this.isAuthenticated.bind(this);
-    this.getAccessToken = this.getAccessToken.bind(this);
-    this.getIdToken = this.getIdToken.bind(this);
-    this.renewSession = this.renewSession.bind(this);
-  }
-
   login() {
     this.auth0.authorize();
   }
 
-  handleAuthentication(cb) {
-    this.auth0.parseHash((err, authResult) => {
-      console.log("parseHash", err, authResult);
-      if (authResult && authResult.accessToken && authResult.idToken) {
+  handleAuthentication() {
+    return new Promise(resolve =>
+      this.auth0.parseHash((err, authResult) => {
+        if (err) {
+          throw err;
+        }
+
         this.setSession(authResult);
-        cb();
-      } else if (err) {
-        console.log(err);
-        alert(`Error: ${err.error}. Check the console for further details.`);
-      }
-    });
+        return resolve(authResult);
+      })
+    );
   }
 
   getAccessToken() {
-    return this.accessToken;
+    const sesssion = JSON.parse(sessionStorage.getItem("session"));
+
+    return sesssion && sesssion.accessToken;
   }
 
   getIdToken() {
-    return this.idToken;
+    const sesssion = JSON.parse(sessionStorage.getItem("session"));
+
+    return sesssion && sesssion.isToken;
   }
 
   setSession(authResult) {
     // Set isLoggedIn flag in sessionStorage
-    sessionStorage.setItem("isLoggedIn", "true");
 
-    // Set the time that the access token will expire at
-    let expiresAt = authResult.expiresIn * 1000 + new Date().getTime();
-    this.accessToken = authResult.accessToken;
-    this.idToken = authResult.idToken;
-    this.expiresAt = expiresAt;
+    sessionStorage.setItem(
+      "session",
+      JSON.stringify({
+        ...authResult,
+        expiresAt: authResult.expiresIn * 1000 + new Date().getTime()
+      })
+    );
   }
 
   renewSession() {
@@ -76,16 +70,7 @@ export default class Auth {
   }
 
   logout() {
-    // Remove tokens and expiry time
-    this.accessToken = null;
-    this.idToken = null;
-    this.expiresAt = 0;
-
-    // Remove isLoggedIn flag from sessierr, authResultonStorage
-    sessionStorage.removeItem("isLoggedIn");
-
-    // navigate to the home route
-    history.replace("/home");
+    sessionStorage.removeItem("session");
   }
 
   isAuthenticated() {
@@ -93,7 +78,9 @@ export default class Auth {
     // access token's expiry time
     // let expiresAt = this.expiresAt;
     // return new Date().getTime() < expiresAt;
+    const sesssion = JSON.parse(sessionStorage.getItem("session"));
+    console.log(sesssion);
 
-    return sessionStorage.getItem("isLoggedIn") === "true";
+    return sesssion && new Date().getTime() < sesssion.expiresAt;
   }
 }

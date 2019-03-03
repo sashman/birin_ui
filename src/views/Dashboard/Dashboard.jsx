@@ -11,6 +11,8 @@ import MyRingCountCard from "./MyRingCountCard.jsx";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
 
+import LoggedIn from "../../Auth/LoggedIn";
+
 class Dashboard extends React.Component {
   state = {
     value: 0
@@ -40,4 +42,4 @@ Dashboard.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(dashboardStyle)(Dashboard);
+export default withStyles(dashboardStyle)(LoggedIn(Dashboard));
