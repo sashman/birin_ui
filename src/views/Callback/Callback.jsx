@@ -51,7 +51,6 @@ class Callback extends Component {
 
 Callback.propTypes = {
   classes: PropTypes.object.isRequired,
-  auth: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired
 };
 
