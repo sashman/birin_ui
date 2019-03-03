@@ -11,7 +11,7 @@ export default class Auth {
     clientID: AUTH_CONFIG.clientId,
     redirectUri: AUTH_CONFIG.callbackUrl,
     responseType: "token id_token",
-    scope: "openid"
+    scope: "openid profile"
   });
 
   login() {
@@ -41,6 +41,18 @@ export default class Auth {
     const sesssion = JSON.parse(sessionStorage.getItem("session"));
 
     return sesssion && sesssion.isToken;
+  }
+
+  getUserInfo() {
+    return new Promise(resolve => {
+      this.auth0.client.userInfo(this.getAccessToken(), function(err, user) {
+        if (!err) {
+          resolve(user);
+        }
+
+        throw err;
+      });
+    });
   }
 
   setSession(authResult) {
