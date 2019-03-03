@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Redirect } from "react-router-dom";
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 
@@ -13,7 +12,6 @@ class LogoutButton extends React.Component {
   state = { loggedIn: true };
   handleLogout = () => {
     this.context.auth.logout();
-    // this.setState({ loggedIn: false });
   };
 
   static contextTypes = {
@@ -23,7 +21,7 @@ class LogoutButton extends React.Component {
   render() {
     const { classes } = this.props;
 
-    return this.state.loggedIn ? (
+    return (
       <Button
         color={"white"}
         className={classes.buttonLink}
@@ -31,8 +29,6 @@ class LogoutButton extends React.Component {
       >
         <p className={classes.linkText}>Log Out</p>
       </Button>
-    ) : (
-      <Redirect to={"/"} />
     );
   }
 }

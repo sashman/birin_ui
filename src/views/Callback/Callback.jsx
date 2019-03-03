@@ -35,7 +35,9 @@ class Callback extends Component {
           .then(() => {
             this.setState({ loginSuccess: true, loginAttepmted: true });
           })
-          .catch(err => console.error(err));
+          .catch(err => {
+            console.error(err);
+          });
       }
     }
 

@@ -13,6 +13,8 @@ import CardAvatar from "components/Card/CardAvatar.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 
+import LoggedIn from "../../Auth/LoggedIn";
+
 import avatar from "assets/img/faces/marc.jpg";
 
 const styles = {
@@ -175,4 +177,4 @@ function UserProfile(props) {
   );
 }
 
-export default withStyles(styles)(UserProfile);
+export default withStyles(styles)(LoggedIn(UserProfile));
