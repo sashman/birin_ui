@@ -71,6 +71,10 @@ export default class Auth {
 
   logout() {
     sessionStorage.removeItem("session");
+    this.auth0.logout({
+      returnTo: AUTH_CONFIG.logoutReturnTo,
+      clientID: AUTH_CONFIG.clientId
+    });
   }
 
   isAuthenticated() {
