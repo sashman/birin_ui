@@ -47,11 +47,11 @@ export default class Auth {
   getUserInfo() {
     return new Promise(resolve => {
       this.auth0.client.userInfo(this.getAccessToken(), function(err, user) {
-        if (!err) {
-          resolve(user);
+        if (err) {
+          throw err;
         }
 
-        throw err;
+        resolve(user);
       });
     });
   }
