@@ -65,22 +65,10 @@ class UserProfile extends React.Component {
               </CardHeader>
               <CardBody>
                 <GridContainer>
-                  <GridItem xs={12} sm={12} md={5}>
-                    <CustomInput
-                      labelText="Company (disabled)"
-                      id="company-disabled"
-                      formControlProps={{
-                        fullWidth: true
-                      }}
-                      inputProps={{
-                        disabled: true
-                      }}
-                    />
-                  </GridItem>
                   <GridItem xs={12} sm={12} md={3}>
                     <CustomInput
-                      labelText="Username"
-                      id="username"
+                      labelText="License number"
+                      id="license_number"
                       formControlProps={{
                         fullWidth: true
                       }}
@@ -172,17 +160,15 @@ class UserProfile extends React.Component {
           <GridItem xs={12} sm={12} md={4}>
             <Card profile>
               <CardAvatar profile>
-                <a href="#pablo" onClick={e => e.preventDefault()}>
-                  <img src={userInfo ? userInfo.picture : avatar} alt="..." />
-                </a>
+                <img src={userInfo ? userInfo.picture : avatar} alt="..." />
               </CardAvatar>
               <CardBody profile>
                 <h4 className={classes.cardTitle}>
                   {userInfo ? userInfo.name : null}
                 </h4>
-                <Button color="primary" round>
-                  Follow
-                </Button>
+                {userInfo && userInfo.name !== userInfo.email ? (
+                  <p>{userInfo ? userInfo.email : null}</p>
+                ) : null}
               </CardBody>
             </Card>
           </GridItem>
