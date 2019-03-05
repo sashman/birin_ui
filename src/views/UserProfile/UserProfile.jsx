@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import _ from "lodash";
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -38,7 +39,7 @@ const styles = {
 };
 
 class UserProfile extends React.Component {
-  state = { userInfo: false };
+  state = { userInfo: {} };
   static contextTypes = {
     auth: PropTypes.object
   };
@@ -47,7 +48,7 @@ class UserProfile extends React.Component {
     const { auth } = this.context;
     const { userInfo } = this.state;
 
-    if (!userInfo) {
+    if (_.isEmpty(userInfo)) {
       auth.getUserInfo().then(userInfo => this.setState({ userInfo }));
     }
     console.log(userInfo);
@@ -74,15 +75,6 @@ class UserProfile extends React.Component {
                       }}
                     />
                   </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      labelText="Email address"
-                      id="email-address"
-                      formControlProps={{
-                        fullWidth: true
-                      }}
-                    />
-                  </GridItem>
                 </GridContainer>
                 <GridContainer>
                   <GridItem xs={12} sm={12} md={6}>
@@ -91,6 +83,9 @@ class UserProfile extends React.Component {
                       id="first-name"
                       formControlProps={{
                         fullWidth: true
+                      }}
+                      inputProps={{
+                        value: userInfo.given_name || ""
                       }}
                     />
                   </GridItem>
@@ -101,34 +96,8 @@ class UserProfile extends React.Component {
                       formControlProps={{
                         fullWidth: true
                       }}
-                    />
-                  </GridItem>
-                </GridContainer>
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      labelText="City"
-                      id="city"
-                      formControlProps={{
-                        fullWidth: true
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      labelText="Country"
-                      id="country"
-                      formControlProps={{
-                        fullWidth: true
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={4}>
-                    <CustomInput
-                      labelText="Postal Code"
-                      id="postal-code"
-                      formControlProps={{
-                        fullWidth: true
+                      inputProps={{
+                        value: userInfo.family_name || ""
                       }}
                     />
                   </GridItem>
@@ -139,14 +108,13 @@ class UserProfile extends React.Component {
                       About me
                     </InputLabel>
                     <CustomInput
-                      labelText="Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
                       id="about-me"
                       formControlProps={{
                         fullWidth: true
                       }}
                       inputProps={{
                         multiline: true,
-                        rows: 5
+                        rows: 3
                       }}
                     />
                   </GridItem>
@@ -160,14 +128,15 @@ class UserProfile extends React.Component {
           <GridItem xs={12} sm={12} md={4}>
             <Card profile>
               <CardAvatar profile>
-                <img src={userInfo ? userInfo.picture : avatar} alt="..." />
+                <img
+                  src={userInfo.picture ? userInfo.picture : avatar}
+                  alt="..."
+                />
               </CardAvatar>
               <CardBody profile>
-                <h4 className={classes.cardTitle}>
-                  {userInfo ? userInfo.name : null}
-                </h4>
-                {userInfo && userInfo.name !== userInfo.email ? (
-                  <p>{userInfo ? userInfo.email : null}</p>
+                <h4 className={classes.cardTitle}>{userInfo.name}</h4>
+                {userInfo.name !== userInfo.email ? (
+                  <p>{userInfo.email}</p>
                 ) : null}
               </CardBody>
             </Card>
