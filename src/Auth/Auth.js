@@ -11,7 +11,8 @@ export default class Auth {
     clientID: AUTH_CONFIG.clientId,
     redirectUri: AUTH_CONFIG.callbackUrl,
     responseType: "token id_token",
-    scope: "openid profile email"
+    scope:
+      "openid profile email create:current_user_metadata update:current_user_metadata"
   });
 
   login() {

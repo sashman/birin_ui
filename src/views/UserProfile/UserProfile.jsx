@@ -43,6 +43,20 @@ class UserProfile extends React.Component {
   static contextTypes = {
     auth: PropTypes.object
   };
+
+  handleUpdateProfile = () => {
+    console.log(this.state);
+  };
+
+  handleChange = name => event => {
+    this.setState({
+      userInfo: {
+        ...this.state.userInfo,
+        [name]: event.target.value
+      }
+    });
+  };
+
   render() {
     const { classes } = this.props;
     const { auth } = this.context;
@@ -73,6 +87,10 @@ class UserProfile extends React.Component {
                       formControlProps={{
                         fullWidth: true
                       }}
+                      inputProps={{
+                        value: userInfo.license_number || "",
+                        onChange: this.handleChange("license_number")
+                      }}
                     />
                   </GridItem>
                 </GridContainer>
@@ -85,7 +103,8 @@ class UserProfile extends React.Component {
                         fullWidth: true
                       }}
                       inputProps={{
-                        value: userInfo.given_name || ""
+                        value: userInfo.given_name || "",
+                        onChange: this.handleChange("given_name")
                       }}
                     />
                   </GridItem>
@@ -97,7 +116,8 @@ class UserProfile extends React.Component {
                         fullWidth: true
                       }}
                       inputProps={{
-                        value: userInfo.family_name || ""
+                        value: userInfo.family_name || "",
+                        onChange: this.handleChange("family_name")
                       }}
                     />
                   </GridItem>
@@ -121,7 +141,9 @@ class UserProfile extends React.Component {
                 </GridContainer>
               </CardBody>
               <CardFooter>
-                <Button color="primary">Update Profile</Button>
+                <Button color="primary" onClick={this.handleUpdateProfile}>
+                  Update Profile
+                </Button>
               </CardFooter>
             </Card>
           </GridItem>
