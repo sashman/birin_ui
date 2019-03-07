@@ -65,7 +65,6 @@ class UserProfile extends React.Component {
     if (_.isEmpty(userInfo)) {
       auth.getUserInfo().then(userInfo => this.setState({ userInfo }));
     }
-    console.log(userInfo);
 
     return (
       <div>

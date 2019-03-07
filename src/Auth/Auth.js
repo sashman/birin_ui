@@ -96,7 +96,6 @@ export default class Auth {
     // let expiresAt = this.expiresAt;
     // return new Date().getTime() < expiresAt;
     const sesssion = JSON.parse(sessionStorage.getItem("session"));
-    console.log(sesssion);
 
     return sesssion && new Date().getTime() < sesssion.expiresAt;
   }
