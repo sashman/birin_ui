@@ -15,6 +15,9 @@ import CardAvatar from "components/Card/CardAvatar.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 
+import gql from "graphql-tag";
+import { Mutation } from "react-apollo";
+
 import LoggedIn from "../../Auth/LoggedIn";
 
 import avatar from "assets/img/faces/marc.jpg";
@@ -38,14 +41,34 @@ const styles = {
   }
 };
 
+const CREATE_USER = gql`
+  mutation CreateUser($data: UserInput!) {
+    createUser(data: $data){
+      auth_id
+    }
+  }
+`;
+
+
 class UserProfile extends React.Component {
   state = { userInfo: {} };
   static contextTypes = {
     auth: PropTypes.object
   };
 
-  handleUpdateProfile = () => {
+  handleUpdateProfile = (createUser) => () => {
     console.log(this.state);
+    const { license_number, email, name, sub } = this.state.userInfo;
+    createUser({
+      variables: {
+        data: {
+          license_number,
+          email,
+          name,
+          auth_id: sub
+        }
+      }
+    });
   };
 
   handleChange = name => event => {
@@ -67,103 +90,107 @@ class UserProfile extends React.Component {
     }
 
     return (
-      <div>
-        <GridContainer>
-          <GridItem xs={12} sm={12} md={8}>
-            <Card>
-              <CardHeader color="primary">
-                <h4 className={classes.cardTitleWhite}>Edit Profile</h4>
-                <p className={classes.cardCategoryWhite}>
-                  Complete your profile
+      <Mutation mutation={CREATE_USER}>
+        {(createUser, { data }) =>
+          <div>
+            <GridContainer>
+              <GridItem xs={12} sm={12} md={8}>
+                <Card>
+                  <CardHeader color="primary">
+                    <h4 className={classes.cardTitleWhite}>Edit Profile</h4>
+                    <p className={classes.cardCategoryWhite}>
+                      Complete your profile
                 </p>
-              </CardHeader>
-              <CardBody>
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={3}>
-                    <CustomInput
-                      labelText="License number"
-                      id="license_number"
-                      formControlProps={{
-                        fullWidth: true
-                      }}
-                      inputProps={{
-                        value: userInfo.license_number || "",
-                        onChange: this.handleChange("license_number")
-                      }}
-                    />
-                  </GridItem>
-                </GridContainer>
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={6}>
-                    <CustomInput
-                      labelText="First Name"
-                      id="first-name"
-                      formControlProps={{
-                        fullWidth: true
-                      }}
-                      inputProps={{
-                        value: userInfo.given_name || "",
-                        onChange: this.handleChange("given_name")
-                      }}
-                    />
-                  </GridItem>
-                  <GridItem xs={12} sm={12} md={6}>
-                    <CustomInput
-                      labelText="Last Name"
-                      id="last-name"
-                      formControlProps={{
-                        fullWidth: true
-                      }}
-                      inputProps={{
-                        value: userInfo.family_name || "",
-                        onChange: this.handleChange("family_name")
-                      }}
-                    />
-                  </GridItem>
-                </GridContainer>
-                <GridContainer>
-                  <GridItem xs={12} sm={12} md={12}>
-                    <InputLabel style={{ color: "#AAAAAA" }}>
-                      About me
+                  </CardHeader>
+                  <CardBody>
+                    <GridContainer>
+                      <GridItem xs={12} sm={12} md={3}>
+                        <CustomInput
+                          labelText="License number"
+                          id="license_number"
+                          formControlProps={{
+                            fullWidth: true
+                          }}
+                          inputProps={{
+                            value: userInfo.license_number || "",
+                            onChange: this.handleChange("license_number")
+                          }}
+                        />
+                      </GridItem>
+                    </GridContainer>
+                    <GridContainer>
+                      <GridItem xs={12} sm={12} md={6}>
+                        <CustomInput
+                          labelText="First Name"
+                          id="first-name"
+                          formControlProps={{
+                            fullWidth: true
+                          }}
+                          inputProps={{
+                            value: userInfo.given_name || "",
+                            onChange: this.handleChange("given_name")
+                          }}
+                        />
+                      </GridItem>
+                      <GridItem xs={12} sm={12} md={6}>
+                        <CustomInput
+                          labelText="Last Name"
+                          id="last-name"
+                          formControlProps={{
+                            fullWidth: true
+                          }}
+                          inputProps={{
+                            value: userInfo.family_name || "",
+                            onChange: this.handleChange("family_name")
+                          }}
+                        />
+                      </GridItem>
+                    </GridContainer>
+                    <GridContainer>
+                      <GridItem xs={12} sm={12} md={12}>
+                        <InputLabel style={{ color: "#AAAAAA" }}>
+                          About me
                     </InputLabel>
-                    <CustomInput
-                      id="about-me"
-                      formControlProps={{
-                        fullWidth: true
-                      }}
-                      inputProps={{
-                        multiline: true,
-                        rows: 3
-                      }}
-                    />
-                  </GridItem>
-                </GridContainer>
-              </CardBody>
-              <CardFooter>
-                <Button color="primary" onClick={this.handleUpdateProfile}>
-                  Update Profile
+                        <CustomInput
+                          id="about-me"
+                          formControlProps={{
+                            fullWidth: true
+                          }}
+                          inputProps={{
+                            multiline: true,
+                            rows: 3
+                          }}
+                        />
+                      </GridItem>
+                    </GridContainer>
+                  </CardBody>
+                  <CardFooter>
+                    <Button color="primary" onClick={this.handleUpdateProfile(createUser)}>
+                      Update Profile
                 </Button>
-              </CardFooter>
-            </Card>
-          </GridItem>
-          <GridItem xs={12} sm={12} md={4}>
-            <Card profile>
-              <CardAvatar profile>
-                <img
-                  src={userInfo.picture ? userInfo.picture : avatar}
-                  alt="..."
-                />
-              </CardAvatar>
-              <CardBody profile>
-                <h4 className={classes.cardTitle}>{userInfo.name}</h4>
-                {userInfo.name !== userInfo.email ? (
-                  <p>{userInfo.email}</p>
-                ) : null}
-              </CardBody>
-            </Card>
-          </GridItem>
-        </GridContainer>
-      </div>
+                  </CardFooter>
+                </Card>
+              </GridItem>
+              <GridItem xs={12} sm={12} md={4}>
+                <Card profile>
+                  <CardAvatar profile>
+                    <img
+                      src={userInfo.picture ? userInfo.picture : avatar}
+                      alt="..."
+                    />
+                  </CardAvatar>
+                  <CardBody profile>
+                    <h4 className={classes.cardTitle}>{userInfo.name}</h4>
+                    {userInfo.name !== userInfo.email ? (
+                      <p>{userInfo.email}</p>
+                    ) : null}
+                  </CardBody>
+                </Card>
+              </GridItem>
+            </GridContainer>
+          </div>
+        }
+      </Mutation>
     );
   }
 }
