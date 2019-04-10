@@ -43,12 +43,11 @@ const styles = {
 
 const CREATE_USER = gql`
   mutation CreateUser($data: UserInput!) {
-    createUser(data: $data){
+    createUser(data: $data) {
       auth_id
     }
   }
 `;
-
 
 class UserProfile extends React.Component {
   state = { userInfo: {} };
@@ -56,8 +55,7 @@ class UserProfile extends React.Component {
     auth: PropTypes.object
   };
 
-  handleUpdateProfile = (createUser) => () => {
-    console.log(this.state);
+  handleUpdateProfile = createUser => () => {
     const { license_number, email, name, sub } = this.state.userInfo;
     createUser({
       variables: {
@@ -91,7 +89,7 @@ class UserProfile extends React.Component {
 
     return (
       <Mutation mutation={CREATE_USER}>
-        {(createUser, { data }) =>
+        {(createUser, { _data }) => (
           <div>
             <GridContainer>
               <GridItem xs={12} sm={12} md={8}>
@@ -100,7 +98,7 @@ class UserProfile extends React.Component {
                     <h4 className={classes.cardTitleWhite}>Edit Profile</h4>
                     <p className={classes.cardCategoryWhite}>
                       Complete your profile
-                </p>
+                    </p>
                   </CardHeader>
                   <CardBody>
                     <GridContainer>
@@ -150,7 +148,7 @@ class UserProfile extends React.Component {
                       <GridItem xs={12} sm={12} md={12}>
                         <InputLabel style={{ color: "#AAAAAA" }}>
                           About me
-                    </InputLabel>
+                        </InputLabel>
                         <CustomInput
                           id="about-me"
                           formControlProps={{
@@ -165,9 +163,12 @@ class UserProfile extends React.Component {
                     </GridContainer>
                   </CardBody>
                   <CardFooter>
-                    <Button color="primary" onClick={this.handleUpdateProfile(createUser)}>
+                    <Button
+                      color="primary"
+                      onClick={this.handleUpdateProfile(createUser)}
+                    >
                       Update Profile
-                </Button>
+                    </Button>
                   </CardFooter>
                 </Card>
               </GridItem>
@@ -189,7 +190,7 @@ class UserProfile extends React.Component {
               </GridItem>
             </GridContainer>
           </div>
-        }
+        )}
       </Mutation>
     );
   }
