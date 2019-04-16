@@ -8,6 +8,7 @@ import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 
 import MyRingCountCard from "./MyRingCountCard.jsx";
+import RingTypesCountChart from "./RingTypesCountChart";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
 
@@ -31,6 +32,9 @@ class Dashboard extends React.Component {
         <GridContainer>
           <GridItem xs={3} sm={3} md={3}>
             <MyRingCountCard />
+          </GridItem>
+          <GridItem xs={9} sm={9} md={9}>
+            <RingTypesCountChart />
           </GridItem>
         </GridContainer>
       </div>
