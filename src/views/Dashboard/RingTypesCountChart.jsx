@@ -2,8 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
-import moment from "moment";
-import _ from "lodash";
 // @material-ui/core
 import withStyles from "@material-ui/core/styles/withStyles";
 
