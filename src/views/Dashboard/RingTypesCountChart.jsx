@@ -31,6 +31,7 @@ class RingTypesCountChart extends React.Component {
               ring_types {
                 type
                 total
+                allocated
               }
             }
           `}
@@ -39,29 +40,23 @@ class RingTypesCountChart extends React.Component {
             if (loading) return <p>Loading...</p>;
             if (error) return <p>Error :(</p>;
 
-            const { ring_types: ringTypesUnsorted } = data;
-            const ringTypes = ringTypesUnsorted.sort((a, b) => {
-              var typeA = a.type.toUpperCase();
-              var typeB = b.type.toUpperCase();
-              if (typeA < typeB) {
-                return -1;
-              }
-              if (typeA > typeB) {
-                return 1;
-              }
-
-              return 0;
-            });
+            const { ring_types } = data;
+            const ringTypes = ring_types.sort(this.sortType);
 
             const labels = ringTypes.map(({ type }) => type);
-            const series = [ringTypes.map(({ total }) => total)];
-            const max = Math.max(...series[0]);
+            const series = [
+              ringTypes.map(({ allocated }) => allocated),
+              ringTypes.map(({ total, allocated }) => total - allocated)
+            ];
+
+            const max = Math.max(...ringTypes.map(({ total }) => total));
             const chartData = {
               labels,
               series
             };
 
             const options = {
+              stackBars: true,
               axisX: {
                 showGrid: false
               },
@@ -144,6 +139,18 @@ class RingTypesCountChart extends React.Component {
       </Card>
     );
   }
+
+  sortType = (a, b) => {
+    var typeA = a.type.toUpperCase();
+    var typeB = b.type.toUpperCase();
+    if (typeA < typeB) {
+      return -1;
+    }
+    if (typeA > typeB) {
+      return 1;
+    }
+    return 0;
+  };
 }
 
 RingTypesCountChart.propTypes = {
