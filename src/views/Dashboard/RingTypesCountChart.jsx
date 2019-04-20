@@ -9,6 +9,9 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
 
 import ChartistGraph from "react-chartist";
 
@@ -21,10 +24,21 @@ const delays2 = 80,
 
 class RingTypesCountChart extends React.Component {
   state = {
-    value: 0
+    value: 0,
+    showUnallocated: true,
+    showAllocated: true
   };
+
+  handleChange(toggleName) {
+    return () =>
+      this.setState({
+        [toggleName]: !this.state[toggleName]
+      });
+  }
+
   render() {
     const { classes } = this.props;
+
     return (
       <Card chart>
         <Query
@@ -41,17 +55,27 @@ class RingTypesCountChart extends React.Component {
           {({ loading, error, data }) => {
             if (loading) return <p>Loading...</p>;
             if (error) return <p>Error :(</p>;
+            const { showUnallocated, showAllocated } = this.state;
 
             const { ring_types } = data;
             const ringTypes = ring_types.sort(this.sortType);
 
             const labels = ringTypes.map(({ type }) => type);
-            const series = [
-              ringTypes.map(({ allocated }) => allocated),
-              ringTypes.map(({ total, allocated }) => total - allocated)
-            ];
+            const allocated = ringTypes.map(({ allocated }) => allocated);
+            const unallocated = ringTypes.map(
+              ({ total, allocated }) => total - allocated
+            );
 
-            const max = Math.max(...ringTypes.map(({ total }) => total));
+            const series = [];
+            if (showAllocated) {
+              series.push(allocated);
+            }
+
+            if (showUnallocated) {
+              series.push(unallocated);
+            }
+
+            const max = Math.max(...series.flat());
             const chartData = {
               labels,
               series
@@ -118,6 +142,28 @@ class RingTypesCountChart extends React.Component {
                   <h4 className={classes.cardTitle}>Ring types</h4>
                   <p className={classes.cardCategory}>
                     Number of rings per type
+                    <FormGroup row>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={this.state.showAllocated}
+                            onChange={this.handleChange("showAllocated")}
+                            value="allocated"
+                          />
+                        }
+                        label="Allocated"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={this.state.showUnallocated}
+                            onChange={this.handleChange("showUnallocated")}
+                            value="unallocated"
+                          />
+                        }
+                        label="Unallocated"
+                      />
+                    </FormGroup>
                   </p>
                 </CardBody>
               </div>
