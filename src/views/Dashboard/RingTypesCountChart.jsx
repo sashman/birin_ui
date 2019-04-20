@@ -14,6 +14,8 @@ import ChartistGraph from "react-chartist";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
 
+import { numberFormat } from "../../util/number";
+
 const delays2 = 80,
   durations2 = 500;
 
@@ -61,21 +63,7 @@ class RingTypesCountChart extends React.Component {
                 showGrid: false
               },
               axisY: {
-                labelInterpolationFnc: function(value) {
-                  if (!value) {
-                    return 0;
-                  }
-
-                  if (value > 999999) {
-                    return `${(value / 1000000).toFixed(1)}m`;
-                  }
-
-                  if (value > 999) {
-                    return `${(value / 1000).toFixed(1)}k`;
-                  }
-
-                  return value.toFixed(2);
-                }
+                labelInterpolationFnc: numberFormat
               },
               low: 0,
               high: max,
