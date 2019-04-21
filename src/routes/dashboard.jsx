@@ -6,6 +6,7 @@ import Person from "@material-ui/icons/Person";
 import Callback from "views/Callback/Callback.jsx";
 import DashboardPage from "views/Dashboard/Dashboard.jsx";
 import UserProfile from "views/UserProfile/UserProfile.jsx";
+import RingSeriesList from "views/RingSeriesList/RingSeriesList";
 
 const dashboardRoutes = [
   {
@@ -22,6 +23,13 @@ const dashboardRoutes = [
     navbarName: "Birin Dashboard",
     icon: Dashboard,
     component: DashboardPage
+  },
+  {
+    path: "/ring_series",
+    sidebarName: "Ring Series",
+    navbarName: "Ring Series",
+    icon: "list",
+    component: RingSeriesList
   },
   {
     path: "/user",
