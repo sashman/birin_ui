@@ -95,8 +95,8 @@ class RingSeriesList extends React.Component {
                       allocated_at
                     }) => [
                       type,
-                      size,
                       `${start_number} - ${end_number}`,
+                      size,
                       allocated_at ? moment(allocated_at).format("L") : ""
                     ]
                   );
@@ -109,7 +109,7 @@ class RingSeriesList extends React.Component {
                     <div>
                       <Table
                         tableHeaderColor="info"
-                        tableHead={["Type", "Size", "Number", "Allocated Date"]}
+                        tableHead={["Type", "Number", "Size", "Allocated Date"]}
                         tableData={paginatedRingSeries}
                       />
                       <TablePagination
