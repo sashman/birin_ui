@@ -13,6 +13,8 @@ import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import TablePagination from "@material-ui/core/TablePagination";
 
+moment.locale("en-gb");
+
 const styles = {
   cardCategoryWhite: {
     "&,& a,& a:hover,& a:focus": {
