@@ -7,6 +7,7 @@ import Callback from "views/Callback/Callback.jsx";
 import DashboardPage from "views/Dashboard/Dashboard.jsx";
 import UserProfile from "views/UserProfile/UserProfile.jsx";
 import RingSeriesList from "views/RingSeriesList/RingSeriesList";
+import UsersList from "views/UsersList/UsersList";
 
 const dashboardRoutes = [
   {
@@ -32,8 +33,15 @@ const dashboardRoutes = [
     component: RingSeriesList
   },
   {
-    path: "/user",
-    sidebarName: "User Profile",
+    path: "/users",
+    sidebarName: "Users",
+    navbarName: "Users",
+    icon: "list",
+    component: UsersList
+  },
+  {
+    path: "/profile",
+    sidebarName: "Profile",
     navbarName: "Profile",
     icon: Person,
     component: UserProfile
