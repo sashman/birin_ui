@@ -11,6 +11,9 @@ import GridContainer from "components/Grid/GridContainer.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 moment.locale("en-gb");
 
@@ -45,14 +48,6 @@ const styles = {
 };
 
 class UsersStats extends React.Component {
-  handleChangePage = (event, page) => {
-    this.setState({ page });
-  };
-
-  handleChangeRowsPerPage = event => {
-    this.setState({ rowsPerPage: event.target.value });
-  };
-
   render() {
     const {
       classes,
@@ -77,6 +72,13 @@ class UsersStats extends React.Component {
                       name
                       initials
                       license_number
+                      ring_types {
+                        data {
+                          type
+                          total
+                        }
+                        total
+                      }
                     }
                   }
                 `}
@@ -87,6 +89,7 @@ class UsersStats extends React.Component {
                   if (error) return <p>Error :(</p>;
 
                   const { user } = data;
+                  const { ring_types } = user;
 
                   return (
                     <div>
@@ -100,6 +103,22 @@ class UsersStats extends React.Component {
                       <div>
                         <strong>License number:</strong> {user.license_number}
                       </div>
+                      <div>
+                        <strong>Total rings:</strong> {ring_types.total}
+                      </div>
+
+                      <List component="nav" aria-label="Main mailbox folders">
+                        {ring_types.data
+                          .sort((a, b) => (a.type > b.type ? 1 : -1))
+                          .map(({ type, total }) => (
+                            <ListItem key={type}>
+                              <ListItemText
+                                primary={<strong>{type}</strong>}
+                                secondary={total}
+                              />
+                            </ListItem>
+                          ))}
+                      </List>
                     </div>
                   );
                 }}
