@@ -8,6 +8,7 @@ import DashboardPage from "views/Dashboard/Dashboard.jsx";
 import UserProfile from "views/UserProfile/UserProfile.jsx";
 import RingSeriesList from "views/RingSeriesList/RingSeriesList";
 import UsersList from "views/UsersList/UsersList";
+import UsersStats from "views/UsersList/UserStats";
 
 const dashboardRoutes = [
   {
@@ -31,6 +32,11 @@ const dashboardRoutes = [
     navbarName: "Ring Series",
     icon: "list",
     component: RingSeriesList
+  },
+  {
+    path: "/users/:id",
+    hidden: true,
+    component: UsersStats
   },
   {
     path: "/users",
