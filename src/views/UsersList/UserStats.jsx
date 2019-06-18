@@ -1,5 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
+import Link from "@material-ui/core/Link";
+import { Link as RouterLink } from "react-router-dom";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import moment from "moment";
@@ -64,6 +66,11 @@ class UsersStats extends React.Component {
               <h4 className={classes.cardTitleWhite}>User Statistics</h4>
             </CardHeader>
             <CardBody>
+              <div>
+                <Link component={RouterLink} to={`/users`}>
+                  Back to user list
+                </Link>
+              </div>
               <Query
                 query={gql`
                   query User($id: ID!) {
