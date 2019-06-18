@@ -1,4 +1,6 @@
 import React from "react";
+import Link from "@material-ui/core/Link";
+import { Link as RouterLink } from "react-router-dom";
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import moment from "moment";
@@ -75,6 +77,7 @@ class UsersList extends React.Component {
                 query={gql`
                   {
                     users {
+                      id
                       email
                       name
                       initials
@@ -86,13 +89,19 @@ class UsersList extends React.Component {
                 {({ loading, error, data }) => {
                   if (loading) return <p>Loading...</p>;
                   if (error) return <p>Error :(</p>;
+                  const UserLink = id => (
+                    <Link component={RouterLink} to={`/users/${id}`}>
+                      View
+                    </Link>
+                  );
 
                   const users = data.users.map(
-                    ({ email, name, initials, license_number }) => [
+                    ({ email, name, initials, license_number, id }) => [
                       email,
                       name,
                       initials,
-                      license_number
+                      license_number,
+                      UserLink(id)
                     ]
                   );
                   const paginatedUsers = users.slice(
@@ -108,7 +117,8 @@ class UsersList extends React.Component {
                           "Email",
                           "Name",
                           "Initials",
-                          "License Number"
+                          "License Number",
+                          ""
                         ]}
                         tableData={paginatedUsers}
                       />
