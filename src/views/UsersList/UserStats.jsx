@@ -16,6 +16,8 @@ import CardBody from "components/Card/CardBody.jsx";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import Button from "@material-ui/core/Button";
+import Icon from "@material-ui/core/Icon";
 
 moment.locale("en-gb");
 
@@ -50,13 +52,32 @@ const styles = {
 };
 
 class UsersStats extends React.Component {
+  state = {
+    selectedIndex: null
+  };
+
+  handleListItemClick(event, index) {
+    this.setState({ selectedIndex: index });
+  }
   render() {
+    const { selectedIndex } = this.state;
+
     const {
       classes,
       match: {
         params: { id }
       }
     } = this.props;
+
+    const RingTypeTotals = ({ type, total }) => (
+      <ListItem
+        button
+        selected={selectedIndex === type}
+        onClick={event => this.handleListItemClick(event, type)}
+      >
+        <ListItemText primary={<strong>{type}</strong>} secondary={total} />
+      </ListItem>
+    );
 
     return (
       <GridContainer>
@@ -111,21 +132,36 @@ class UsersStats extends React.Component {
                         <strong>License number:</strong> {user.license_number}
                       </div>
                       <div>
-                        <strong>Total rings:</strong> {ring_types.total}
+                        <strong>Allocated rings:</strong> {ring_types.total}
                       </div>
 
-                      <List component="nav" aria-label="Main mailbox folders">
-                        {ring_types.data
-                          .sort((a, b) => (a.type > b.type ? 1 : -1))
-                          .map(({ type, total }) => (
-                            <ListItem key={type}>
-                              <ListItemText
-                                primary={<strong>{type}</strong>}
-                                secondary={total}
-                              />
-                            </ListItem>
-                          ))}
-                      </List>
+                      <div>
+                        <Card>
+                          <CardHeader>
+                            <h3>Allocated types</h3>
+                          </CardHeader>
+                          <CardBody>
+                            <GridContainer>
+                              <GridItem xs={6} sm={6} md={6}>
+                                <List
+                                  component="nav"
+                                  aria-label="Main mailbox folders"
+                                >
+                                  {ring_types.data
+                                    .sort((a, b) => (a.type > b.type ? 1 : -1))
+                                    .map(({ type, total }) => (
+                                      <RingTypeTotals
+                                        total={total}
+                                        type={type}
+                                        key={type}
+                                      />
+                                    ))}
+                                </List>
+                              </GridItem>
+                            </GridContainer>
+                          </CardBody>
+                        </Card>
+                      </div>
                     </div>
                   );
                 }}
