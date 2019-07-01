@@ -12,7 +12,7 @@ import indexRoutes from "routes/index.jsx";
 const hist = createBrowserHistory();
 
 const client = new ApolloClient({
-  uri: process.env.REACT_APP_SECRET_CODE || "http://localhost:4001"
+  uri: process.env.REACT_APP_API_URL || "http://localhost:4001"
 });
 
 ReactDOM.render(
