@@ -19,9 +19,6 @@ import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardS
 
 import { numberFormat } from "../../util/number";
 
-const delays2 = 80,
-  durations2 = 250;
-
 class RingTypesCountChart extends React.Component {
   state = {
     value: 0,
