@@ -13,14 +13,14 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 
-import ChartistGraph from "react-chartist";
+import { Bar } from "react-chartjs-2";
 
 import dashboardStyle from "assets/jss/material-dashboard-react/views/dashboardStyle.jsx";
 
 import { numberFormat } from "../../util/number";
 
 const delays2 = 80,
-  durations2 = 500;
+  durations2 = 250;
 
 class RingTypesCountChart extends React.Component {
   state = {
@@ -65,77 +65,50 @@ class RingTypesCountChart extends React.Component {
             const unallocated = ringTypes.map(
               ({ total, allocated }) => total - allocated
             );
-
-            const series = [];
+            const datasets = [];
             if (showAllocated) {
-              series.push(allocated);
+              datasets.push({
+                label: "Allocated",
+                data: allocated,
+                backgroundColor: "rgba(0, 100, 0, 0.5)"
+              });
             }
 
             if (showUnallocated) {
-              series.push(unallocated);
+              datasets.push({
+                label: "Unallocated",
+                data: unallocated,
+                backgroundColor: "rgba(0, 50, 50, 0.5)"
+              });
             }
 
-            const max = Math.max(...series.flat());
             const chartData = {
               labels,
-              series
-            };
-
-            const options = {
-              stackBars: true,
-              axisX: {
-                showGrid: false
-              },
-              axisY: {
-                labelInterpolationFnc: numberFormat
-              },
-              low: 0,
-              high: max,
-              chartPadding: {
-                top: 0,
-                right: 5,
-                bottom: 0,
-                left: 12
-              }
-            };
-            const responsiveOptions = [
-              [
-                "screen and (max-width: 640px)",
-                {
-                  seriesBarDistance: 5,
-                  axisX: {
-                    labelInterpolationFnc: function(value) {
-                      return value[0];
-                    }
-                  }
-                }
-              ]
-            ];
-            const animation = {
-              draw: function(data) {
-                if (data.type === "bar") {
-                  data.element.animate({
-                    opacity: {
-                      begin: (data.index + 1) * delays2,
-                      dur: durations2,
-                      from: 0,
-                      to: 1,
-                      easing: "ease"
-                    }
-                  });
-                }
-              }
+              datasets
             };
             return (
               <div>
                 <CardHeader color="success">
-                  <ChartistGraph
-                    className="ct-chart"
+                  <Bar
                     data={chartData}
-                    type="Bar"
-                    options={options}
-                    responsiveOptions={responsiveOptions}
-                    listener={animation}
+                    options={{
+                      maintainAspectRatio: false,
+                      scales: {
+                        xAxes: [
+                          {
+                            stacked: true
+                          }
+                        ],
+                        yAxes: [
+                          {
+                            stacked: true,
+                            ticks: {
+                              callback: numberFormat
+                            }
+                          }
+                        ]
+                      }
+                    }}
                   />
                 </CardHeader>
                 <CardBody>
