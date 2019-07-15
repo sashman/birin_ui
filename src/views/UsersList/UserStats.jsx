@@ -16,6 +16,7 @@ import CardBody from "components/Card/CardBody.jsx";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import UserAllocationHistory from "./UserAllocationHistory";
 
 moment.locale("en-gb");
 
@@ -141,10 +142,7 @@ class UsersStats extends React.Component {
                           <CardBody>
                             <GridContainer>
                               <GridItem xs={6} sm={6} md={6}>
-                                <List
-                                  component="nav"
-                                  aria-label="Main mailbox folders"
-                                >
+                                <List>
                                   {ring_types.data
                                     .sort((a, b) => (a.type > b.type ? 1 : -1))
                                     .map(({ type, total }) => (
@@ -155,6 +153,14 @@ class UsersStats extends React.Component {
                                       />
                                     ))}
                                 </List>
+                              </GridItem>
+                              <GridItem xs={6} sm={6} md={6}>
+                                {selectedIndex ? (
+                                  <UserAllocationHistory
+                                    user_id={id}
+                                    ring_type={selectedIndex}
+                                  />
+                                ) : null}
                               </GridItem>
                             </GridContainer>
                           </CardBody>
