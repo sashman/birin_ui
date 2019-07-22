@@ -1,5 +1,7 @@
 import React from "react";
 import classNames from "classnames";
+import { ApolloConsumer } from "react-apollo";
+import gql from "graphql-tag";
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import Search from "@material-ui/icons/Search";
@@ -15,11 +17,50 @@ import Button from "components/CustomButtons/Button.jsx";
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.jsx";
 
+const SEARCH_BY_NUMBER = gql`
+  query RingNumber($number: String!) {
+    ring_number(number: $number) {
+      type
+      ring_series {
+        start_number
+        end_number
+        allocated_at
+        user {
+          name
+        }
+      }
+    }
+  }
+`;
+
 class SearchBar extends React.Component {
   state = {
-    open: false
+    open: false,
+    search: null
   };
-  handleToggle = () => {
+  handleToggle = client => async () => {
+    if (!this.state.search) {
+      return;
+    }
+
+    const number = this.state.search;
+
+    try {
+      const result = await client.query({
+        query: SEARCH_BY_NUMBER,
+        variables: { number }
+      });
+
+      const {
+        data: { ring_number }
+      } = result;
+
+      this.setState({ searchResult: ring_number });
+    } catch (error) {
+      console.error(error);
+      this.setState({ searchResult: null });
+    }
+
     this.setState(state => ({ open: !state.open }));
   };
 
@@ -29,68 +70,78 @@ class SearchBar extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { open } = this.state;
+    const { open, searchResult } = this.state;
     return (
-      <div className={classes.searchWrapper}>
-        <CustomInput
-          formControlProps={{
-            className: classes.margin + " " + classes.search
-          }}
-          inputProps={{
-            placeholder: "Search",
-            inputProps: {
-              "aria-label": "Search"
-            }
-          }}
-          buttonRef={node => {
-            this.anchorEl = node;
-          }}
-        />
-        <Button
-          color="white"
-          aria-label="edit"
-          justIcon
-          round
-          onClick={this.handleToggle}
-        >
-          <Search />
-        </Button>
-        <Poppers
-          open={open}
-          anchorEl={this.anchorEl}
-          transition
-          disablePortal
-          className={
-            classNames({ [classes.popperClose]: !open }) +
-            " " +
-            classes.pooperNav
-          }
-        >
-          {({ TransitionProps, placement }) => (
-            <Grow
-              {...TransitionProps}
-              id="menu-list-grow"
-              style={{
-                transformOrigin:
-                  placement === "bottom" ? "center top" : "center bottom"
+      <ApolloConsumer>
+        {client => (
+          <div className={classes.searchWrapper}>
+            <CustomInput
+              formControlProps={{
+                className: classes.margin + " " + classes.search
               }}
+              inputProps={{
+                placeholder: "Search",
+                inputProps: {
+                  "aria-label": "Search"
+                },
+                onChange: event => this.setState({ search: event.target.value })
+              }}
+              buttonRef={node => {
+                this.anchorEl = node;
+              }}
+            />
+            <Button
+              color="white"
+              aria-label="edit"
+              justIcon
+              round
+              onClick={this.handleToggle(client)}
             >
-              <Paper>
-                <ClickAwayListener onClickAway={this.handleClose}>
-                  <MenuList role="menu">
-                    <MenuItem
-                      onClick={this.handleClose}
-                      className={classes.dropdownItem}
-                    >
-                      Search result
-                    </MenuItem>
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Poppers>
-      </div>
+              <Search />
+            </Button>
+            <Poppers
+              open={open && !!searchResult}
+              anchorEl={this.anchorEl}
+              transition
+              disablePortal
+              className={
+                classNames({ [classes.popperClose]: !open }) +
+                " " +
+                classes.pooperNav
+              }
+            >
+              {({ TransitionProps, placement }) => (
+                <Grow
+                  {...TransitionProps}
+                  id="menu-list-grow"
+                  style={{
+                    transformOrigin:
+                      placement === "bottom" ? "center top" : "center bottom"
+                  }}
+                >
+                  <Paper>
+                    <ClickAwayListener onClickAway={this.handleClose}>
+                      <MenuList role="menu">
+                        <MenuItem
+                          onClick={this.handleClose}
+                          className={classes.dropdownItem}
+                        >
+                          <strong>{searchResult.type}</strong>{" "}
+                          {searchResult.ring_series.start_number}-
+                          {searchResult.ring_series.end_number}{" "}
+                          {searchResult.ring_series.user
+                            ? searchResult.ring_series.user.name
+                            : null}
+                        </MenuItem>
+                      </MenuList>
+                    </ClickAwayListener>
+                  </Paper>
+                </Grow>
+              )}
+            </Poppers>
+          </div>
+        )}
+      </ApolloConsumer>
     );
   }
 }
