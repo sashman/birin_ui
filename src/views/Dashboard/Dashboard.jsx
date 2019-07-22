@@ -30,10 +30,10 @@ class Dashboard extends React.Component {
     return (
       <div>
         <GridContainer>
-          <GridItem xs={3} sm={3} md={3}>
+          <GridItem xs={12} sm={3} md={3}>
             <MyRingCountCard />
           </GridItem>
-          <GridItem xs={9} sm={9} md={9}>
+          <GridItem xs={12} sm={9} md={9}>
             <RingTypesCountChart />
           </GridItem>
         </GridContainer>
