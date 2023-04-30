@@ -58,6 +58,6 @@
     "babel-preset-es2015": "6.24.1",
     "eslint": "^5.10.0",
     "eslint-plugin-react": "^7.11.1",
-    "firebase-tools": "^6.2.2"
+    "firebase-tools": "^11.29.1"
   }
 }
